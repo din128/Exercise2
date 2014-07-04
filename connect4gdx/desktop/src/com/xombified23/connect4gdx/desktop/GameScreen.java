@@ -41,6 +41,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         spriteBatch.dispose();
         stage.dispose();
+        dispose();
     }
 
     @Override
@@ -78,6 +79,7 @@ public class GameScreen implements Screen {
     }
 
     private void createGrid(int x, int y) {
+        shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeType.Line);
         shapeRenderer.setColor(Color.BLACK);
         for (int j = 0; j < y; j++) {
