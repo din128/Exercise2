@@ -2,44 +2,35 @@ package com.xombified23.connect4gdx.desktop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-/**
- * This is where you screen code will go, any UI should be in here
- *
- * @author Dan Lee Jo
- */
 public class GameScreen implements Screen {
     // Constants
-    private final int WIDTH = 1280;
-    private final int HEIGHT = 720;
     private final int NUMXSQUARE = 7;
     private final int NUMYSQUARE = 6;
     private final int SQUARESIZE = 100;
 
     private final Stage stage;
-    private final SpriteBatch spriteBatch;
-    private ShapeRenderer shapeRenderer;
-    private OrthographicCamera camera;
     private final ProjectApplication game;
+    private final ShapeRenderer shapeRenderer;
+    private final OrthographicCamera camera;
+    private MapActor[][] mapActorList;
 
     public GameScreen(final ProjectApplication game) {
         this.game = game;
-        spriteBatch = new SpriteBatch();
         stage = new Stage();
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera();
+
         camera.setToOrtho(false, 1280, 720);
+        createGrid(NUMXSQUARE, NUMYSQUARE);
     }
 
     @Override
     public void dispose() {
-        spriteBatch.dispose();
+        shapeRenderer.dispose();
         stage.dispose();
         dispose();
     }
@@ -47,8 +38,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         camera.update();
-
-        createGrid(NUMXSQUARE, NUMYSQUARE);
         stage.act(delta);
         stage.draw();
     }
@@ -79,15 +68,14 @@ public class GameScreen implements Screen {
     }
 
     private void createGrid(int x, int y) {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeType.Line);
-        shapeRenderer.setColor(Color.BLACK);
+        mapActorList = new MapActor[x][y];
+
         for (int j = 0; j < y; j++) {
             for (int i = 0; i < x; i++) {
-                shapeRenderer.rect(SQUARESIZE * i, HEIGHT - SQUARESIZE - SQUARESIZE * j, SQUARESIZE, SQUARESIZE);
+                mapActorList[i][j] = new MapActor(shapeRenderer, SQUARESIZE, i, j);
+                stage.addActor(mapActorList[i][j]);
             }
         }
-        shapeRenderer.end();
     }
 }
 
