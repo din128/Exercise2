@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Iterator;
+
 public class GameScreen implements Screen {
     // Constants
     private final int NUMXSQUARE = 7;
@@ -23,7 +25,6 @@ public class GameScreen implements Screen {
     private final ShapeRenderer shapeRenderer;
     private final OrthographicCamera camera;
     private MapActor[][] mapActorList;
-    private Rectangle dot;
     private boolean isDropping = false;
     private Array<Rectangle> dotsArray;
 
@@ -33,6 +34,7 @@ public class GameScreen implements Screen {
         dotTexture = new Texture(Gdx.files.internal("yellow.png"));
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera();
+        dotsArray = new Array<Rectangle>();
         camera.setToOrtho(false, 1280, 720);
         createGrid(NUMXSQUARE, NUMYSQUARE);
 
@@ -51,26 +53,25 @@ public class GameScreen implements Screen {
         stage.draw();
 
         MapActor currMapActor;
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.justTouched()) {
             Vector2 stageCoord;
             stageCoord = stage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
             if ((stage.hit(stageCoord.x, stageCoord.y, true)) != null) {
                 currMapActor = (MapActor) stage.hit(stageCoord.x, stageCoord.y, true);
-                spawnConnectDot(currMapActor);
-                isDropping = true;
+                dotsArray.add(spawnConnectDot(currMapActor));
             }
         }
 
-        // Animate drops
-        if (isDropping) {
-            if (dot != null) {
-                game.batch.begin();
-                game.batch.draw(dotTexture, dot.getX(), dot.getY(), dot.getWidth(), dot.getHeight());
-                game.batch.end();
-                dot.y -= 1000 * Gdx.graphics.getDeltaTime();
-                if (dot.y < groundCoord) {
-                    isDropping = false;
-                }
+        // Animate drop
+        Iterator<Rectangle> iter = dotsArray.iterator();
+        while (iter.hasNext()) {
+            Rectangle currDot = iter.next();
+            game.batch.begin();
+            game.batch.draw(dotTexture, currDot.getX(), currDot.getY(), currDot.getWidth(), currDot.getHeight());
+            game.batch.end();
+            currDot.y -= 1000 * Gdx.graphics.getDeltaTime();
+            if (currDot.y < groundCoord) {
+                iter.remove();
             }
         }
     }
@@ -113,11 +114,12 @@ public class GameScreen implements Screen {
         groundCoord = Gdx.graphics.getHeight() - j * SQUARESIZE;
     }
 
-    private void spawnConnectDot(MapActor mapActor) {
-        dot = new Rectangle();
+    private Rectangle spawnConnectDot(MapActor mapActor) {
+        Rectangle dot = new Rectangle();
         dot.setSize(mapActor.squareSize, mapActor.squareSize);
         dot.setX(mapActor.getX());
         dot.setY(Gdx.graphics.getHeight() - (mapActor.squareSize));
+        return dot;
     }
 
 }
