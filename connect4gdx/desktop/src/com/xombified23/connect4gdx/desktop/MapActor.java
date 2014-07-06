@@ -1,3 +1,7 @@
+// TODO
+// Add API for MapActor to store Red or Yellow Dot data
+// Add API to store position of MapActorList
+
 package com.xombified23.connect4gdx.desktop;
 
 import com.badlogic.gdx.Gdx;
@@ -9,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class MapActor extends Actor {
     public final int squareSize;
     public final ShapeRenderer shapeRenderer;
+    private String currDot = null;
 
     public MapActor(ShapeRenderer shapeRenderer, int squareSize, int x, int y) {
         this.squareSize = squareSize;
@@ -28,5 +33,13 @@ public class MapActor extends Actor {
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.rect(0, 0, squareSize, squareSize);
         shapeRenderer.end();
+    }
+
+    public void setDot(String currDot) {
+        this.currDot = currDot;
+    }
+
+    public String getDot() {
+        return currDot;
     }
 }

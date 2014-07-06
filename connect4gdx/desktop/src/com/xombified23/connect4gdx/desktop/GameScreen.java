@@ -14,6 +14,8 @@ import java.util.Iterator;
 
 public class GameScreen implements Screen {
     // Constants
+    private final String YELLOW_DOT = "0";
+    private final String RED_DOT = "1";
     private final int NUMXSQUARE = 7;
     private final int NUMYSQUARE = 6;
     private final int SQUARESIZE = 100;
@@ -26,7 +28,8 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private MapActor[][] mapActorList;
     private boolean isDropping = false;
-    private Array<Rectangle> dotsArray;
+    private Array<Rectangle> dotsAnimationArray;
+    private Array<Rectangle> dotsOnBoardArray;
 
     public GameScreen(final ProjectApplication game) {
         this.game = game;
@@ -34,7 +37,8 @@ public class GameScreen implements Screen {
         dotTexture = new Texture(Gdx.files.internal("yellow.png"));
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera();
-        dotsArray = new Array<Rectangle>();
+        dotsAnimationArray = new Array<Rectangle>();
+        dotsOnBoardArray = new Array<Rectangle>();
         camera.setToOrtho(false, 1280, 720);
         createGrid(NUMXSQUARE, NUMYSQUARE);
 
@@ -42,6 +46,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        dotTexture.dispose();
         shapeRenderer.dispose();
         stage.dispose();
     }
@@ -52,27 +57,42 @@ public class GameScreen implements Screen {
         stage.act(delta);
         stage.draw();
 
+        Vector2 stageCoord;
         MapActor currMapActor;
         if (Gdx.input.justTouched()) {
-            Vector2 stageCoord;
             stageCoord = stage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
             if ((stage.hit(stageCoord.x, stageCoord.y, true)) != null) {
                 currMapActor = (MapActor) stage.hit(stageCoord.x, stageCoord.y, true);
-                dotsArray.add(spawnConnectDot(currMapActor));
+                dotsAnimationArray.add(spawnTopPosDot(currMapActor));
             }
         }
 
         // Animate drop
-        Iterator<Rectangle> iter = dotsArray.iterator();
-        while (iter.hasNext()) {
-            Rectangle currDot = iter.next();
+        Iterator<Rectangle> iterDotAnim = dotsAnimationArray.iterator();
+        while (iterDotAnim.hasNext()) {
+            Rectangle currDot = iterDotAnim.next();
             game.batch.begin();
             game.batch.draw(dotTexture, currDot.getX(), currDot.getY(), currDot.getWidth(), currDot.getHeight());
             game.batch.end();
             currDot.y -= 1000 * Gdx.graphics.getDeltaTime();
+
             if (currDot.y < groundCoord) {
-                iter.remove();
+                float xMid = currDot.getX() + SQUARESIZE / 2;
+                float yMid = currDot.getY() + SQUARESIZE / 2;
+                if ((stage.hit(xMid, yMid, true)) != null) {
+                    currMapActor = (MapActor) stage.hit(xMid, yMid, true);
+                    dotsOnBoardArray.add(spawnCurrPosDot(currMapActor));
+                    currMapActor.setDot(YELLOW_DOT);
+                }
+                iterDotAnim.remove();
             }
+        }
+
+        // Redraw new dot on board
+        for (Rectangle dotOnBoard : dotsOnBoardArray) {
+            game.batch.begin();
+            game.batch.draw(dotTexture, dotOnBoard.getX(), dotOnBoard.getY(), dotOnBoard.getWidth(), dotOnBoard.getHeight());
+            game.batch.end();
         }
     }
 
@@ -114,11 +134,19 @@ public class GameScreen implements Screen {
         groundCoord = Gdx.graphics.getHeight() - j * SQUARESIZE;
     }
 
-    private Rectangle spawnConnectDot(MapActor mapActor) {
+    private Rectangle spawnTopPosDot(MapActor mapActor) {
         Rectangle dot = new Rectangle();
         dot.setSize(mapActor.squareSize, mapActor.squareSize);
         dot.setX(mapActor.getX());
         dot.setY(Gdx.graphics.getHeight() - (mapActor.squareSize));
+        return dot;
+    }
+
+    private Rectangle spawnCurrPosDot(MapActor mapActor) {
+        Rectangle dot = new Rectangle();
+        dot.setSize(mapActor.squareSize, mapActor.squareSize);
+        dot.setX(mapActor.getX());
+        dot.setY(mapActor.getY());
         return dot;
     }
 
