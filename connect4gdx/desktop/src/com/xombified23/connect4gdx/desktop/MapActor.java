@@ -14,10 +14,14 @@ public class MapActor extends Actor {
     public final int squareSize;
     public final ShapeRenderer shapeRenderer;
     private String currDot = null;
+    private int x;
+    private int y;
 
     public MapActor(ShapeRenderer shapeRenderer, int squareSize, int x, int y) {
         this.squareSize = squareSize;
         this.shapeRenderer = shapeRenderer;
+        this.x = x;
+        this.y = y;
 
         setSize(squareSize, squareSize);
         setBounds(x * squareSize, Gdx.graphics.getHeight() - (y + 1) * squareSize, getWidth(), getHeight());
@@ -41,5 +45,13 @@ public class MapActor extends Actor {
 
     public String getDot() {
         return currDot;
+    }
+
+    public int getXPos() {
+        return this.x;
+    }
+
+    public int getYPos() {
+        return this.y;
     }
 }

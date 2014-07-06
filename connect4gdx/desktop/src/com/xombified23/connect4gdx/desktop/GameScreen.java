@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Iterator;
+import java.util.Random;
 
 public class GameScreen implements Screen {
     // Constants
@@ -21,24 +22,31 @@ public class GameScreen implements Screen {
     private final int SQUARESIZE = 100;
     private float groundCoord = 0;
 
-    private final Texture dotTexture;
+    private final Texture yellowTexture;
+    private final Texture redTexture;
+    private Texture currDotTexture;
     private final Stage stage;
     private final ProjectApplication game;
     private final ShapeRenderer shapeRenderer;
     private final OrthographicCamera camera;
     private MapActor[][] mapActorList;
-    private boolean isDropping = false;
     private Array<Rectangle> dotsAnimationArray;
     private Array<Rectangle> dotsOnBoardArray;
 
     public GameScreen(final ProjectApplication game) {
         this.game = game;
         stage = new Stage();
-        dotTexture = new Texture(Gdx.files.internal("yellow.png"));
+        yellowTexture = new Texture(Gdx.files.internal("yellow.png"));
+        redTexture = new Texture(Gdx.files.internal("red.png"));
         shapeRenderer = new ShapeRenderer();
         camera = new OrthographicCamera();
         dotsAnimationArray = new Array<Rectangle>();
         dotsOnBoardArray = new Array<Rectangle>();
+
+        if (new Random().nextInt(2) == 0)
+            currDotTexture = yellowTexture;
+        else currDotTexture = redTexture;
+
         camera.setToOrtho(false, 1280, 720);
         createGrid(NUMXSQUARE, NUMYSQUARE);
 
@@ -46,7 +54,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        dotTexture.dispose();
+        yellowTexture.dispose();
+        redTexture.dispose();
         shapeRenderer.dispose();
         stage.dispose();
     }
@@ -57,13 +66,21 @@ public class GameScreen implements Screen {
         stage.act(delta);
         stage.draw();
 
+
         Vector2 stageCoord;
-        MapActor currMapActor;
+        MapActor currMapActor = null;
         if (Gdx.input.justTouched()) {
             stageCoord = stage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
             if ((stage.hit(stageCoord.x, stageCoord.y, true)) != null) {
                 currMapActor = (MapActor) stage.hit(stageCoord.x, stageCoord.y, true);
-                dotsAnimationArray.add(spawnTopPosDot(currMapActor));
+
+                // Check if top square is filled
+                if ((stage.hit(currMapActor.getX() + SQUARESIZE / 2, Gdx.graphics.getHeight() - SQUARESIZE / 2, true)) != null) {
+                    MapActor topMapActor = (MapActor) stage.hit(currMapActor.getX() + SQUARESIZE / 2, Gdx.graphics.getHeight() - SQUARESIZE / 2, true);
+                    if (topMapActor.getDot() == null) {
+                        dotsAnimationArray.add(spawnTopPosDot(currMapActor));
+                    }
+                }
             }
         }
 
@@ -72,26 +89,48 @@ public class GameScreen implements Screen {
         while (iterDotAnim.hasNext()) {
             Rectangle currDot = iterDotAnim.next();
             game.batch.begin();
-            game.batch.draw(dotTexture, currDot.getX(), currDot.getY(), currDot.getWidth(), currDot.getHeight());
+            game.batch.draw(currDotTexture, currDot.getX(), currDot.getY(), currDot.getWidth(), currDot.getHeight());
             game.batch.end();
             currDot.y -= 1000 * Gdx.graphics.getDeltaTime();
 
-            if (currDot.y < groundCoord) {
+            if ((stage.hit(currDot.getX() + SQUARESIZE / 2, currDot.getY(), true)) != null)
+                currMapActor = (MapActor) stage.hit(currDot.getX() + SQUARESIZE / 2, currDot.getY(), true);
+
+            // Handle dot when it hits another rectangle or ground
+            if (currDot.y < groundCoord || currMapActor.getDot() != null) {
                 float xMid = currDot.getX() + SQUARESIZE / 2;
                 float yMid = currDot.getY() + SQUARESIZE / 2;
                 if ((stage.hit(xMid, yMid, true)) != null) {
                     currMapActor = (MapActor) stage.hit(xMid, yMid, true);
                     dotsOnBoardArray.add(spawnCurrPosDot(currMapActor));
-                    currMapActor.setDot(YELLOW_DOT);
+
+                    if (currDotTexture == yellowTexture) {
+                        currMapActor.setDot(YELLOW_DOT);
+                        currDotTexture = redTexture;
+                    } else {
+                        currMapActor.setDot(RED_DOT);
+                        currDotTexture = yellowTexture;
+                    }
+                    calculateWinner();
                 }
                 iterDotAnim.remove();
+
             }
         }
 
         // Redraw new dot on board
         for (Rectangle dotOnBoard : dotsOnBoardArray) {
+            Texture onBoardTexture;
+            MapActor onBoardActor = null;
+            if ((stage.hit(dotOnBoard.getX() + SQUARESIZE / 2, dotOnBoard.getY() + SQUARESIZE / 2, true)) != null)
+                onBoardActor = (MapActor) stage.hit(dotOnBoard.getX() + SQUARESIZE / 2, dotOnBoard.getY(), true);
+
+            if (onBoardActor.getDot() == YELLOW_DOT)
+                onBoardTexture = yellowTexture;
+            else onBoardTexture = redTexture;
+
             game.batch.begin();
-            game.batch.draw(dotTexture, dotOnBoard.getX(), dotOnBoard.getY(), dotOnBoard.getWidth(), dotOnBoard.getHeight());
+            game.batch.draw(onBoardTexture, dotOnBoard.getX(), dotOnBoard.getY(), dotOnBoard.getWidth(), dotOnBoard.getHeight());
             game.batch.end();
         }
     }
@@ -135,6 +174,7 @@ public class GameScreen implements Screen {
     }
 
     private Rectangle spawnTopPosDot(MapActor mapActor) {
+
         Rectangle dot = new Rectangle();
         dot.setSize(mapActor.squareSize, mapActor.squareSize);
         dot.setX(mapActor.getX());
@@ -148,6 +188,10 @@ public class GameScreen implements Screen {
         dot.setX(mapActor.getX());
         dot.setY(mapActor.getY());
         return dot;
+    }
+
+    private void calculateWinner() {
+        // TODO
     }
 
 }
