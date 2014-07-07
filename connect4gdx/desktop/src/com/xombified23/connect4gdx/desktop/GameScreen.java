@@ -111,7 +111,7 @@ public class GameScreen implements Screen {
                         currMapActor.setDot(RED_DOT);
                         currDotTexture = yellowTexture;
                     }
-                    calculateWinner();
+                    calculateWinner(currMapActor);
                 }
                 iterDotAnim.remove();
 
@@ -190,8 +190,196 @@ public class GameScreen implements Screen {
         return dot;
     }
 
-    private void calculateWinner() {
-        // TODO
+    private void calculateWinner(MapActor currActor) {
+        String currColor = null;
+        int count = 1;
+
+        if (currActor.getDot() != null)
+         currColor = currActor.getDot();
+
+        int i = currActor.getXPos();
+        int j = currActor.getYPos();
+
+        checkLeftRightVict (i, j, currColor);
+        checkTopBotVict(i, j, currColor);
+        checkDiagTopLeftVict(i, j, currColor);
+        checkDiagTopRightVict(i, j, currColor);
+    }
+
+    private void checkLeftRightVict (int initX, int initY, String currColor) {
+        int count = 1;
+        int i = initX;
+
+        --i;
+        // First check for boundaries
+        while (i >= 0) {
+            // Then, check whether the mapActor is empty
+            if (mapActorList[i][initY].getDot() == null)
+                break;
+
+                // Then, if mapActor is not empty, check color
+            else if (mapActorList[i][initY].getDot() == currColor) {
+                count++;
+                i--;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        } // Loop, and repeat until count is 4, otherwise, traverse right side
+
+        i = initX;
+        ++i;
+        while (i < NUMXSQUARE) {
+            if (mapActorList[i][initY].getDot() == null)
+                break;
+
+            else if (mapActorList[i][initY].getDot() == currColor) {
+                count++;
+                i++;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        }
+    }
+
+    private void checkTopBotVict (int initX, int initY, String currColor) {
+        int count = 1;
+        int j = initY;
+
+        --j;
+        // First check for boundaries
+        while (j >= 0) {
+            // Then, check whether the mapActor is empty
+            if (mapActorList[initX][j].getDot() == null)
+                break;
+
+                // Then, if mapActor is not empty, check color
+            else if (mapActorList[initX][j].getDot() == currColor) {
+                count++;
+                j--;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        } // Loop, and repeat until count is 4, otherwise, traverse right side
+
+        j = initY;
+        ++j;
+        while (j < NUMYSQUARE) {
+            if (mapActorList[initX][j].getDot() == null)
+                break;
+
+            else if (mapActorList[initX][j].getDot() == currColor) {
+                count++;
+                j++;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        }
+    }
+
+    private void checkDiagTopLeftVict (int initX, int initY, String currColor) {
+        int count = 1;
+        int i = initX;
+        int j = initY;
+
+        --i;
+        --j;
+        // First check for boundaries
+        while (j >= 0 && i >= 0) {
+            // Then, check whether the mapActor is empty
+            if (mapActorList[i][j].getDot() == null)
+                break;
+
+                // Then, if mapActor is not empty, check color
+            else if (mapActorList[i][j].getDot() == currColor) {
+                count++;
+                i--;
+                j--;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        } // Loop, and repeat until count is 4, otherwise, traverse right side
+
+        i = initX;
+        j = initY;
+        ++i;
+        ++j;
+        while (j < NUMYSQUARE && i < NUMXSQUARE) {
+            if (mapActorList[i][j].getDot() == null)
+                break;
+
+            else if (mapActorList[i][j].getDot() == currColor) {
+                count++;
+                i++;
+                j++;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        }
+    }
+
+    private void checkDiagTopRightVict (int initX, int initY, String currColor) {
+        int count = 1;
+        int i = initX;
+        int j = initY;
+
+        ++i;
+        --j;
+        // First check for boundaries
+        while (j >= 0 && i < NUMXSQUARE) {
+            // Then, check whether the mapActor is empty
+            if (mapActorList[i][j].getDot() == null)
+                break;
+
+                // Then, if mapActor is not empty, check color
+            else if (mapActorList[i][j].getDot() == currColor) {
+                count++;
+                i++;
+                j--;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        } // Loop, and repeat until count is 4, otherwise, traverse right side
+
+        i = initX;
+        j = initY;
+        --i;
+        ++j;
+        while (j < NUMYSQUARE && i >= 0) {
+            if (mapActorList[i][j].getDot() == null)
+                break;
+
+            else if (mapActorList[i][j].getDot() == currColor) {
+                count++;
+                i--;
+                j++;
+            } else {
+                break;
+            }
+
+            if (count == 4)
+                System.out.println ("We got a winner!");
+        }
     }
 
 }
