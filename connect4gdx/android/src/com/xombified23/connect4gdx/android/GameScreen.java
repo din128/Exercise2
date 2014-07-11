@@ -60,13 +60,7 @@ public class GameScreen implements Screen {
 
         pennyFont = new BitmapFont(Gdx.files.internal("font.fnt"),
                 Gdx.files.internal("font.png"), false);
-        Label.LabelStyle redStyle = new Label.LabelStyle(pennyFont, Color.RED);
-        redLabel = new Label("Red WINS!", redStyle);
-        redLabel.setPosition(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 100);
 
-        Label.LabelStyle yellowStyle = new Label.LabelStyle(pennyFont, Color.RED);
-        yellowLabel = new Label("Yellow WINS!", yellowStyle);
-        yellowLabel.setPosition(Gdx.graphics.getWidth() - 500, Gdx.graphics.getHeight() - 500);
     }
 
     @Override
@@ -429,7 +423,7 @@ public class GameScreen implements Screen {
         game.batch.begin();
         if (winningColor == YELLOW_DOT) {
             CharSequence str = "Yellow WINNER!";
-            pennyFont.setColor(Color.YELLOW);
+            pennyFont.setColor(Color.RED);
             pennyFont.draw(game.batch, str, Gdx.graphics.getWidth() - 500, Gdx.graphics.getHeight() - 100);
         } else {
             CharSequence str = "Red WINNER!";
