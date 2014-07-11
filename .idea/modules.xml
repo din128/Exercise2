@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/connect4gdx/android/android.iml" filepath="$PROJECT_DIR$/connect4gdx/android/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/connect4gdx/android/build/source/buildConfig/buildConfig.iml" filepath="$PROJECT_DIR$/connect4gdx/android/build/source/buildConfig/buildConfig.iml" />
+      <module fileurl="file://$PROJECT_DIR$/connect4gdx/core/core.iml" filepath="$PROJECT_DIR$/connect4gdx/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/connect4gdx/desktop/desktop.iml" filepath="$PROJECT_DIR$/connect4gdx/desktop/desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/connect4gdx/android/build/source/r/r.iml" filepath="$PROJECT_DIR$/connect4gdx/android/build/source/r/r.iml" />
+    </modules>
+  </component>
+</project>
+

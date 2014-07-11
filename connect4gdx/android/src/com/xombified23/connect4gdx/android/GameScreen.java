@@ -1,4 +1,4 @@
-package com.xombified23.connect4gdx.desktop;
+package com.xombified23.connect4gdx.android;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -23,7 +22,7 @@ public class GameScreen implements Screen {
     private final String RED_DOT = "1";
     private final int NUMXSQUARE = 7;
     private final int NUMYSQUARE = 6;
-    private final int SQUARESIZE = 100;
+    private final int SQUARESIZE = 150;
     private float groundCoord = 0;
 
     private final Texture yellowTexture;
@@ -65,7 +64,7 @@ public class GameScreen implements Screen {
         redLabel = new Label("Red WINS!", redStyle);
         redLabel.setPosition(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 100);
 
-        Label.LabelStyle yellowStyle = new Label.LabelStyle(pennyFont, Color.YELLOW);
+        Label.LabelStyle yellowStyle = new Label.LabelStyle(pennyFont, Color.RED);
         yellowLabel = new Label("Yellow WINS!", yellowStyle);
         yellowLabel.setPosition(Gdx.graphics.getWidth() - 500, Gdx.graphics.getHeight() - 500);
     }

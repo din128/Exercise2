@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/fluent-hc-4.3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/httpclient-4.3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/commons-logging-1.1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/httpcore-4.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/httpclient-cache-4.3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/commons-codec-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/org.json-20120521.jar!/" />
+      <root url="jar://$PROJECT_DIR$/connect4gdx/desktop/jar/httpmime-4.3.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

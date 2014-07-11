@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="core-1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/connect4gdx/core/build/libs/core-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

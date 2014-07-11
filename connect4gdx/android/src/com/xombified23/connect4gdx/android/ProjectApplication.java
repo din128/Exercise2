@@ -1,4 +1,4 @@
-package com.xombified23.connect4gdx.desktop;
+package com.xombified23.connect4gdx.android;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
